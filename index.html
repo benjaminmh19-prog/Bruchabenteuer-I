@@ -142,10 +142,11 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
 .toast.show{animation:toast 1.1s}
 @keyframes toast{0%{opacity:0;transform:scale(.6)}20%{opacity:1;transform:scale(1.1)}80%{opacity:1}100%{opacity:0}}
 #arena.hit{animation:shake .35s}
-.setbox{display:grid;gap:8px;background:#ffffff1f;border-radius:14px;padding:10px 14px;text-align:left;font-size:1rem;width:min(100%,320px)}
-.setbox label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
-.setbox select{font:inherit;font-size:1rem;min-height:44px;border-radius:10px;border:none;padding:4px 8px;color:#1f2a44;background:#fff}
-.setbox[hidden]{display:none}
+.lvls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.lvls button{font:inherit;font-weight:800;font-size:1.05rem;min-height:56px;padding:8px 14px;border-radius:14px;border:3px solid #ffffff55;
+  background:#ffffff1f;color:#fff;cursor:pointer}
+.lvls button.sel{background:#fff;color:#1f2a44;border-color:var(--accent);box-shadow:0 0 0 4px #ff922b66}
+.lvdesc{font-size:.95rem;max-width:30em;min-height:3.2em}
 @media (hover:none){
   .menu button:hover{transform:none;border-color:transparent}
   .slice:hover{filter:none}
@@ -271,16 +272,13 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
         <div class="ov" id="ovE">
           <h2 id="ovT">🚀 Bruch-Arcade</h2>
           <p id="ovP"></p>
-          <button class="btn green" id="startE">Start!</button>
-          <button class="btn grey" id="setBtn">⚙️ Einstellungen (Lehrkraft)</button>
-          <div class="setbox" id="setBox" hidden>
-            <label>Tempo
-              <select id="cfgSpeed"><option value="0.7">Langsam</option><option value="1">Normal</option><option value="1.35">Schnell</option></select></label>
-            <label>Leben
-              <select id="cfgLives"><option>3</option><option>5</option><option>7</option></select></label>
-            <label>Start-Level
-              <select id="cfgLevel"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <div class="lvls" id="lvls">
+            <button data-lv="easy">🐢 Leicht</button>
+            <button data-lv="mid">🚶 Mittel</button>
+            <button data-lv="hard">🚀 Schwer</button>
           </div>
+          <div class="lvdesc" id="lvDesc"></div>
+          <button class="btn green" id="startE">Start!</button>
         </div>
       </div>
     </div>
@@ -634,14 +632,27 @@ $('#nextD').onclick=newD;
    SPIEL E – Bruch-Arcade
    ========================================================= */
 const E={run:false,score:0,lives:3,bubbles:[],rule:null,ruleIdx:-1,ruleCorrect:0,ruleT:0,spawnT:0,last:0,level:1,raf:0,pause:0,combo:0,best:0};
-try{E.best=+localStorage.getItem('bruchArcadeBest')||0}catch(_){}
-const CFG={speed:1,lives:3,level:1};
-try{Object.assign(CFG,JSON.parse(localStorage.getItem('bruchArcadeCfg')||'{}'))}catch(_){}
-function applyCfgUI(){$('#cfgSpeed').value=String(CFG.speed);$('#cfgLives').value=String(CFG.lives);$('#cfgLevel').value=String(CFG.level)}
-function saveCfg(){
-  CFG.speed=+$('#cfgSpeed').value;CFG.lives=+$('#cfgLives').value;CFG.level=+$('#cfgLevel').value;
-  try{localStorage.setItem('bruchArcadeCfg',JSON.stringify(CFG))}catch(_){}
-  E.lives=CFG.lives;E.level=CFG.level;hudE();
+const LEVELS={
+  easy:{name:'Leicht',speed:.5,lives:5,maxRules:3,maxD:[6,6],spawn:2.2,match:.55,step:150,missCost:false,size:92,star:80,
+        desc:'Langsam, große Blasen, nur Halbe, Drittel, Viertel … 5 Leben. Verpasste Blasen kosten kein Leben.'},
+  mid:{name:'Mittel',speed:.75,lives:4,maxRules:7,maxD:[8,10],spawn:1.8,match:.45,step:120,missCost:true,size:80,star:60,
+        desc:'Mittleres Tempo, 4 Leben. Mit der Zeit kommen neue Regeln und größere Nenner dazu.'},
+  hard:{name:'Schwer',speed:1,lives:3,maxRules:9,maxD:[8,12],spawn:1.5,match:.42,step:100,missCost:true,size:76,star:45,
+        desc:'Schnell, 3 Leben, alle Regeln und Nenner bis 12. Nur für Bruch-Profis!'}
+};
+let LVL='mid';
+try{LVL=localStorage.getItem('bruchArcadeLvl')||'mid'}catch(_){}
+if(!LEVELS[LVL])LVL='mid';
+const L=()=>LEVELS[LVL];
+function loadBest(){try{E.best=+localStorage.getItem('bruchArcadeBest_'+LVL)||0}catch(_){E.best=0}}
+function lvlUI(){
+  document.querySelectorAll('#lvls button').forEach(b=>b.classList.toggle('sel',b.dataset.lv===LVL));
+  $('#lvDesc').textContent=L().desc;
+}
+function setLvl(k){
+  if(E.run||!LEVELS[k])return;
+  LVL=k;try{localStorage.setItem('bruchArcadeLvl',k)}catch(_){}
+  loadBest();E.lives=L().lives;E.level=1;hudE();lvlUI();
 }
 const arena=$('#arena');
 const RULES=[
@@ -657,40 +668,40 @@ const RULES=[
 ];
 const BCOL=['#ffd43b','#ff8787','#74c0fc','#69db7c','#b197fc','#ffa94d'];
 function hudE(){
-  $('#livesE').textContent='❤️'.repeat(Math.max(0,E.lives))+'🖤'.repeat(Math.max(0,CFG.lives-E.lives));
+  $('#livesE').textContent='❤️'.repeat(Math.max(0,E.lives))+'🖤'.repeat(Math.max(0,L().lives-E.lives));
   $('#scoreE').textContent=E.score;$('#levelE').textContent=E.level;$('#bestE').textContent=E.best;
 }
 function toastE(t){const e=$('#toastE');e.textContent=t;e.classList.remove('show');void e.offsetWidth;e.classList.add('show')}
 function pickRule(){
-  const avail=Math.min(RULES.length,3+E.level);
+  const avail=Math.min(L().maxRules,3+E.level);
   let i;do{i=rnd(avail)}while(i===E.ruleIdx&&avail>1);
   E.ruleIdx=i;E.rule=RULES[i];E.ruleCorrect=0;E.ruleT=0;
   const r=$('#ruleE');r.innerHTML=E.rule.s;r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash');
 }
 function clearBubbles(){E.bubbles.forEach(b=>b.el.remove());E.bubbles=[];arena.querySelectorAll('.bub').forEach(x=>x.remove())}
 function showStartE(){
-  stopE();clearBubbles();E.lives=CFG.lives;E.level=CFG.level;hudE();
+  stopE();clearBubbles();loadBest();E.lives=L().lives;E.level=1;hudE();lvlUI();
   $('#ovT').textContent='🚀 Bruch-Arcade';
   $('#ovP').innerHTML='Tippe nur die Brüche, die zur Regel oben passen. Falsche Treffer und verpasste passende Brüche kosten ein Leben ❤️. Es wird immer schneller!';
   $('#startE').textContent='Start!';$('#ovE').hidden=false;
 }
 function startE(){
   clearBubbles();
-  E.score=0;E.lives=CFG.lives;E.level=CFG.level;E.combo=0;E.ruleIdx=-1;E.spawnT=.5;E.pause=0;
+  E.score=0;E.lives=L().lives;E.level=1;E.combo=0;E.ruleIdx=-1;E.spawnT=.5;E.pause=0;
   pickRule();hudE();$('#ovE').hidden=true;
   E.run=true;E.last=performance.now();E.raf=requestAnimationFrame(loopE);
 }
 function stopE(){E.run=false;cancelAnimationFrame(E.raf)}
 function spawnE(){
-  const want=Math.random()<.42,maxD=E.level<3?8:12;
+  const want=Math.random()<L().match,maxD=E.level<3?L().maxD[0]:L().maxD[1],sz=L().size;
   let n,d,t=0;
   do{d=2+rnd(maxD-1);n=1+rnd(d-1);t++}while(E.rule.f(n,d)!==want&&t<80);
   const el=document.createElement('div');
-  el.className='bub';el.style.background=pick(BCOL);
-  el.style.left=Math.round(2+Math.random()*(Math.max(10,arena.clientWidth-80)))+'px';
+  el.className='bub';el.style.background=pick(BCOL);el.style.width=el.style.height=sz+'px';el.style.fontSize=(sz/76*1.2).toFixed(2)+'rem';
+  el.style.left=Math.round(2+Math.random()*(Math.max(10,arena.clientWidth-sz-4)))+'px';
   el.innerHTML=F(n,d);
-  const b={el,y:-80,match:E.rule.f(n,d),dead:false};
-  el.__b=b;el.style.transform='translateY(-80px)';
+  const b={el,y:-sz,match:E.rule.f(n,d),dead:false};
+  el.__b=b;el.style.transform=`translateY(${-sz}px)`;
   arena.appendChild(el);E.bubbles.push(b);
 }
 function loseLife(){
@@ -706,14 +717,14 @@ function loopE(ts){
     E.ruleT+=dt;
     if(E.ruleT>25||E.ruleCorrect>=6)nextRuleE();
     E.spawnT-=dt;
-    if(E.spawnT<=0){spawnE();E.spawnT=Math.max(.55,1.5-E.level*.1)}
-    const H=arena.clientHeight,sp=(55+E.level*13)*CFG.speed;
+    if(E.spawnT<=0){spawnE();E.spawnT=Math.max(.55,L().spawn-E.level*.1)}
+    const H=arena.clientHeight,sp=(55+E.level*13)*L().speed;
     for(const b of E.bubbles){
       if(b.dead)continue;
       b.y+=sp*dt;b.el.style.transform=`translateY(${b.y.toFixed(1)}px)`;
-      if(b.y>H-70){
+      if(b.y>H-L().size+6){
         b.dead=true;b.el.remove();
-        if(b.match){toastE('Verpasst!');loseLife();if(!E.run)return}
+        if(b.match){toastE('Verpasst!');if(L().missCost){loseLife();if(!E.run)return}else E.combo=0}
       }
     }
     E.bubbles=E.bubbles.filter(b=>!b.dead);
@@ -726,12 +737,12 @@ function nextRuleE(){
 }
 function gameOverE(){
   stopE();
-  const st=Math.floor(E.score/60);
+  const st=Math.floor(E.score/L().star);
   if(st>0){addStars(st);boom()}
-  if(E.score>E.best){E.best=E.score;try{localStorage.setItem('bruchArcadeBest',E.best)}catch(_){}}
+  if(E.score>E.best){E.best=E.score;try{localStorage.setItem('bruchArcadeBest_'+LVL,E.best)}catch(_){}}
   hudE();
   $('#ovT').textContent='Game Over';
-  $('#ovP').innerHTML=`Punkte: <b>${E.score}</b> · Level ${E.level} · Bestwert ${E.best}<br>${st>0?`Du bekommst ${st} ⭐!`:'Mit 60 Punkten gibt es den ersten Stern.'}`;
+  $('#ovP').innerHTML=`Stufe ${L().name} · Punkte: <b>${E.score}</b> · Level ${E.level} · Bestwert ${E.best}<br>${st>0?`Du bekommst ${st} ⭐!`:`Ab ${L().star} Punkten gibt es den ersten Stern.`}`;
   $('#startE').textContent='Nochmal!';$('#ovE').hidden=false;
 }
 arena.addEventListener('pointerdown',e=>{
@@ -742,7 +753,7 @@ arena.addEventListener('pointerdown',e=>{
   if(b.match){
     E.score+=10+Math.min(E.combo,5)*2;E.combo++;E.ruleCorrect++;
     el.classList.add('gone');
-    const lv=1+Math.floor(E.score/100);
+    const lv=1+Math.floor(E.score/L().step);
     if(lv>E.level){E.level=lv;toastE('Level '+lv+'! 🚀')}
     hudE();
   }else{
@@ -751,9 +762,8 @@ arena.addEventListener('pointerdown',e=>{
   setTimeout(()=>el.remove(),300);
 });
 $('#startE').onclick=startE;
-$('#setBtn').onclick=()=>{const b=$('#setBox');b.hidden=!b.hidden};
-['#cfgSpeed','#cfgLives','#cfgLevel'].forEach(id=>$(id).onchange=saveCfg);
-applyCfgUI();
+$('#lvls').addEventListener('click',e=>{const b=e.target.closest('[data-lv]');if(b)setLvl(b.dataset.lv)});
+loadBest();lvlUI();hudE();
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&E.run){E.pause=Math.max(E.pause,0);E.last=performance.now()}});
 
 /* ---------- Installieren / Offline ---------- */

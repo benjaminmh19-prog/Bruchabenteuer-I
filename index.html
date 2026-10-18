@@ -61,7 +61,7 @@ h1{margin:0;font-size:1.6rem}
   background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 3px 0 #c76a0a}
 .cut button:active{transform:translateY(3px);box-shadow:none}
 /* Bruch-Baumeister */
-.bar{position:relative;height:84px;border-radius:14px;background:#f1f3f5;border:3px solid #364fc7;overflow:visible;margin:34px 0 22px}
+.bar{position:relative;height:84px;border-radius:14px;background:#f1f3f5;border:3px solid #364fc7;overflow:visible;margin:0}
 .bar .segs{position:absolute;inset:0;display:flex;border-radius:10px;overflow:hidden}
 .seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:.95rem;border-right:3px solid #fff;
   cursor:pointer;color:#1f2a44;animation:drop .25s}
@@ -75,7 +75,7 @@ h1{margin:0;font-size:1.6rem}
 .flag em{position:absolute;top:-4px;left:6px;font-style:normal;font-weight:800;background:#e03131;color:#fff;
   padding:1px 8px;border-radius:8px;white-space:nowrap;font-size:.85rem}
 .flag.end em{left:auto;right:6px}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px}
 .tile{border:none;border-radius:16px;padding:12px 6px;font:inherit;font-size:1.4rem;cursor:pointer;
   box-shadow:0 4px 0 #0003;color:#1f2a44}
 .tile:active{transform:translateY(4px);box-shadow:none}
@@ -121,6 +121,27 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
 .numpad button:active{transform:translateY(4px);box-shadow:none;background:#cddcff}
 .numpad button.fn{background:#ffe8cc;box-shadow:0 4px 0 #e0a766}
 .numpad[hidden]{display:none}
+/* Größere Brüche */
+.rngcard{text-align:center}
+.rng{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0 6px}
+.rng button{font:inherit;font-weight:800;font-size:1.05rem;min-height:56px;padding:8px 16px;border-radius:14px;border:3px solid #dee2e6;background:#fff;color:var(--ink);cursor:pointer}
+.rng button.sel{border-color:var(--brand);background:#edf2ff;box-shadow:0 0 0 3px #bac8ff}
+.rngdesc{font-size:.95rem;color:#556;min-height:2.6em}
+.mx{display:inline-flex;align-items:center;gap:2px;margin:0 .15em}
+.pizzas{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.pizzas.p2 .pizza{width:min(44vw,250px);margin:0}
+.pizzas.p3 .pizza{width:min(44vw,210px);margin:0}
+.barwrap{overflow-x:auto;padding:38px 4px 18px;margin:0 -4px;-webkit-overflow-scrolling:touch}
+.seg.sm{font-size:.7rem}
+.mini.big.circle .shape{width:min(30vw,150px)}
+.mini.big.bar .shape{width:min(84vw,300px);display:block;margin:4px auto}
+/* Raster-Tafel und Einstellungen */
+.boards{display:flex;flex-direction:column;align-items:center;gap:10px}
+.board{width:min(88vw,340px);height:auto;display:block}
+.impRow{display:flex;gap:10px;align-items:center;justify-content:center;font-weight:700;min-height:48px;margin-top:4px;cursor:pointer}
+.impRow input{width:26px;height:26px}
+.rng button small{font-weight:600;color:#556}
+.mini.big.grid .shape{display:block;margin:6px auto;width:min(84vw,300px)}
 /* Arcade */
 .hud{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;font-weight:700;font-size:1.05rem;margin-bottom:6px}
 .rule{background:#364fc7;color:#fff;border-radius:14px;padding:10px 12px;text-align:center;font-size:1.15rem;margin-bottom:8px;min-height:3.4em;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}
@@ -166,6 +187,16 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
   <!-- MENÜ -->
   <section class="screen active" id="menu">
     <div class="card" style="text-align:center;font-size:1.1rem">Hallo! Such dir ein Spiel aus und sammle Sterne. 🌟</div>
+    <div class="card rngcard">
+      <b>Wie groß sollen die Nenner sein?</b>
+      <div class="rng" id="rangeBtns">
+        <button data-rg="1">🔹 Klein<br><small>bis 12</small></button>
+        <button data-rg="2">🔷 Mittel<br><small>bis 24</small></button>
+        <button data-rg="3">🔶 Groß<br><small>bis 100</small></button>
+      </div>
+      <label class="impRow"><input type="checkbox" id="impChk"> Auch Brüche größer als 1</label>
+      <div class="rngdesc" id="rangeDesc"></div>
+    </div>
     <div class="menu">
       <button data-go="A"><span class="em">🍕</span><span><b>Pizza-Bäcker</b><span class="d">Brüche bilden: Schneide die Pizza und belege die richtigen Stücke.</span></span></button>
       <button data-go="B"><span class="em">🧱</span><span><b>Bruch-Baumeister</b><span class="d">Brüche zerlegen: Baue den Bruch aus kleineren Bruchteilen.</span></span></button>
@@ -181,7 +212,7 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
     <div class="card">
       <div class="task" id="taskA"></div>
       <div id="pizzaBox"></div>
-      <div class="row cut">
+      <div class="row cut" id="cutRow">
         <button id="minusA" aria-label="Weniger Stücke">−</button>
         <span id="cutTxt"></span>
         <button id="plusA" aria-label="Mehr Stücke">+</button>
@@ -203,11 +234,14 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
     <div class="card">
       <div class="task" id="taskB"></div>
       <div style="text-align:center;font-size:.95rem">Zerlege den Bruch in mindestens zwei Teile. Tippe auf die Bausteine!</div>
-      <div class="bar" id="bar">
-        <div class="over" id="over"></div>
-        <div class="segs" id="segs"></div>
-        <div class="gridl" id="gridl" hidden></div>
-        <div class="flag" id="flag"><em id="flagTxt"></em></div>
+      <div class="barwrap" id="barwrap">
+        <div class="bar" id="bar">
+          <div class="over" id="over"></div>
+          <div class="segs" id="segs"></div>
+          <div class="gridl" id="gridl" hidden></div>
+          <div class="gridl" id="wholel" hidden></div>
+          <div class="flag" id="flag"><em id="flagTxt"></em></div>
+        </div>
       </div>
       <div class="eq" id="eqB"></div>
       <div class="msg" id="msgB"></div>
@@ -218,7 +252,7 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
         <button class="btn orange" id="hintB">💡 Tipp</button>
         <button class="btn green" id="nextB" hidden>Weiter ➜</button>
       </div>
-      <label class="chk"><input type="checkbox" id="gridB"> Hilfsraster einblenden (24 Kästchen = 1 Ganzes)</label>
+      <label class="chk"><input type="checkbox" id="gridB"> Hilfsraster einblenden (<span id="gridTxt">24</span> Kästchen = 1 Ganzes)</label>
       <div class="hint" id="hintBoxB" hidden></div>
     </div>
   </section>
@@ -334,104 +368,221 @@ function slicePath(cx,cy,r,i,d){
 }
 
 /* =========================================================
-   SPIEL A – Pizza-Bäcker (Brüche bilden)
+   Einstellungen für alle Spiele
+   DEN: Größe der Nenner (1 = bis 12, 2 = bis 24, 3 = bis 100)
+   IMP: auch Brüche größer als 1 (unechte Brüche, gemischte Zahlen)
    ========================================================= */
-const A={t:null,d:2,sel:new Set(),solved:0,done:false};
+const DENS={
+  1:{desc:'Nenner bis 12 – Halbe, Drittel, Viertel … (wie bisher).'},
+  2:{desc:'Nenner bis 24 – zum Beispiel Zehntel, Fünfzehntel, Zwanzigstel, Vierundzwanzigstel.'},
+  3:{desc:'Große Nenner bis 100 – zum Beispiel Zwanzigstel, Fünfundzwanzigstel, Fünfzigstel, Hundertstel.'}
+};
+const DLIST={1:[2,3,4,5,6,8,10,12],2:[10,12,14,15,16,18,20,24],3:[20,24,25,30,40,50,60,75,100]};
+let DEN=1,IMP=false;
+try{DEN=+localStorage.getItem('bruchDen')||1;IMP=localStorage.getItem('bruchImp')==='1'}catch(_){}
+if(!DENS[DEN])DEN=1;
+const mix=(n,d)=>{ // gemischte Zahl als HTML
+  const w=Math.floor(n/d),r=n%d;
+  return r===0?`<b>${w}</b>`:w===0?F(r,d):`<span class="mx"><b>${w}</b>${F(r,d)}</span>`;
+};
+function dims(d){let r=1;for(let i=1;i*i<=d;i++)if(d%i===0)r=i;return [r,d/r]}  // Zeilen, Spalten
+function rangeUI(){
+  document.querySelectorAll('#rangeBtns button').forEach(b=>b.classList.toggle('sel',+b.dataset.rg===DEN));
+  $('#impChk').checked=IMP;
+  $('#rangeDesc').textContent=DENS[DEN].desc+(IMP?' Dazu kommen auch Brüche größer als 1.':'');
+}
+function resetGames(){
+  A.t=null;B.target=0;C.q=null;D.q=null;
+  if(E.run)stopE();
+  rangeUI();
+}
+function setDen(k){
+  if(!DENS[k])return;
+  DEN=k;try{localStorage.setItem('bruchDen',String(k))}catch(_){}
+  resetGames();
+}
+function setImp(v){
+  IMP=!!v;try{localStorage.setItem('bruchImp',IMP?'1':'0')}catch(_){}
+  resetGames();
+}
+
+/* =========================================================
+   SPIEL A – Pizza-Bäcker (Brüche bilden)
+   Nenner bis 12: Pizza zum Schneiden. Größere Nenner: Raster-Tafel mit fertigen Feldern.
+   ========================================================= */
+const A={t:null,d:2,sel:new Set(),solved:0,done:false,P:1,grid:false};
 function newA(){
-  const pool=A.solved<3?[2,3,4]:A.solved<7?[2,3,4,5,6,8]:[3,4,5,6,8,10,12];
+  A.grid=DEN>1;
+  const base=A.solved<3?[2,3,4]:A.solved<7?[2,3,4,5,6,8]:[3,4,5,6,8,10,12];
+  const pool=A.grid?DLIST[DEN].filter(x=>A.solved<3?x<=(DEN===2?16:30):true):(IMP?base.filter(x=>x<=8):base);
+  const maxP=IMP?(A.grid?2:(A.solved<4?2:3)):1;
   let d,n;
-  do{d=pick(pool);n=1+rnd(d-1)}while(A.t&&A.t.n===n&&A.t.d===d);
-  A.t={n,d};A.d=2;A.sel=new Set();A.done=false;
+  do{
+    d=pick(pool);
+    const mp=(A.grid&&d>50)?1:maxP;
+    n=(mp>1&&Math.random()<.6)?d+1+rnd(d*(mp-1)-1):1+rnd(d-1);
+  }while(A.t&&A.t.n===n&&A.t.d===d);
+  A.t={n,d};A.P=Math.ceil(n/d);A.d=A.grid?d:2;A.sel=new Set();A.done=false;
   $('#nextA').hidden=true;$('#checkA').hidden=false;$('#hintBoxA').hidden=true;
-  msg('#msgA','Schneide die Pizza und tippe auf die Stücke, die du belegen willst.');
+  $('#cutRow').style.display=A.grid?'none':'';
+  $('#hintBoxA').innerHTML=A.grid
+    ?`Das Raster ist schon in <b>${d}</b> gleiche Felder geteilt. Der <b>Nenner ${d}</b> sagt, wie viele Felder das Ganze hat. Der <b>Zähler ${n}</b> sagt, wie viele Felder du färben sollst.`
+    :n>d
+      ?`Der <b>Nenner</b> sagt, in wie viele Stücke <b>jede</b> Pizza geschnitten wird. Alle ${d} Stücke einer Pizza belegt sind <b>1 Ganzes</b>. Bei einem Bruch über 1 brauchst du mehrere Pizzen.`
+      :`Der <b>Nenner</b> (unten) sagt, in wie viele gleich große Stücke die Pizza geschnitten wird. Der <b>Zähler</b> (oben) sagt, wie viele Stücke du belegst.`;
+  msg('#msgA',A.grid?`Tippe auf die Felder, die du färben willst. Das Ganze hat ${d} Felder.`:'Schneide die Pizza und tippe auf die Stücke, die du belegen willst.');
   renderA();
 }
-function renderA(){
-  $('#taskA').innerHTML=`Bilde den Bruch ${F(A.t.n,A.t.d,'big')}`;
-  let s=`<svg viewBox="0 0 300 300" class="pizza"><circle cx="150" cy="150" r="142" fill="#c98a4b"/>`;
-  for(let i=0;i<A.d;i++){
-    const on=A.sel.has(i);
-    s+=`<path class="slice" data-i="${i}" d="${slicePath(150,150,128,i,A.d)}" fill="${on?'#ff7a59':'#ffd966'}" stroke="#a15c1f" stroke-width="3" stroke-linejoin="round"/>`;
-    if(on){
-      const a=-Math.PI/2+(i+.5)*2*Math.PI/A.d;
-      const r1=A.d<=3?60:78, rr=A.d<=3?20:Math.max(9,Math.min(18,150/A.d));
-      s+=`<circle pointer-events="none" cx="${(150+r1*Math.cos(a)).toFixed(1)}" cy="${(150+r1*Math.sin(a)).toFixed(1)}" r="${rr.toFixed(1)}" fill="#c92a2a"/>`;
-      s+=`<circle pointer-events="none" cx="${(150+(r1+rr+8)*Math.cos(a)*0.95).toFixed(1)}" cy="${(150+(r1+rr+8)*Math.sin(a)*0.95).toFixed(1)}" r="${(rr/3).toFixed(1)}" fill="#2b8a3e"/>`;
-    }
+function boardSVG(p,d,sel){
+  const [rows,cols]=dims(d),cell=300/cols;
+  let s=`<svg viewBox="0 0 300 ${(rows*cell+4).toFixed(1)}" class="board"><rect x="0" y="0" width="300" height="${(rows*cell+4).toFixed(1)}" rx="8" fill="#a15c1f"/>`;
+  for(let i=0;i<d;i++){
+    const r=Math.floor(i/cols),c=i%cols,idx=p*d+i,on=sel.has(idx);
+    s+=`<rect class="slice" data-i="${idx}" x="${(c*cell+2).toFixed(1)}" y="${(r*cell+2).toFixed(1)}" width="${(cell-3).toFixed(1)}" height="${(cell-3).toFixed(1)}" rx="3" fill="${on?'#e8590c':'#ffe8a3'}"/>`;
   }
-  s+='</svg>';
+  return s+'</svg>';
+}
+function renderA(){
+  const {n,d}=A.t,P=A.P,k=A.d;
+  $('#taskA').innerHTML=`Bilde den Bruch ${F(n,d,'big')}`+(n>d?`<div style="font-size:.95rem;font-weight:600;margin-top:4px">Das ist mehr als ein Ganzes – du hast ${P} ${A.grid?'Tafeln':'Pizzen'}.</div>`:'');
+  let s;
+  if(A.grid){
+    s=`<div class="boards">`;
+    for(let p=0;p<P;p++)s+=boardSVG(p,d,A.sel);
+    s+='</div>';
+  }else{
+    s=`<div class="pizzas p${P}">`;
+    for(let p=0;p<P;p++){
+      s+=`<svg viewBox="0 0 300 300" class="pizza"><circle cx="150" cy="150" r="142" fill="#c98a4b"/>`;
+      for(let i=0;i<k;i++){
+        const idx=p*k+i,on=A.sel.has(idx);
+        s+=`<path class="slice" data-i="${idx}" d="${slicePath(150,150,128,i,k)}" fill="${on?'#ff7a59':'#ffd966'}" stroke="#a15c1f" stroke-width="3" stroke-linejoin="round"/>`;
+        if(on){
+          const a=-Math.PI/2+(i+.5)*2*Math.PI/k;
+          const r1=k<=3?60:78, rr=k<=3?20:Math.max(9,Math.min(18,150/k));
+          s+=`<circle pointer-events="none" cx="${(150+r1*Math.cos(a)).toFixed(1)}" cy="${(150+r1*Math.sin(a)).toFixed(1)}" r="${rr.toFixed(1)}" fill="#c92a2a"/>`;
+          s+=`<circle pointer-events="none" cx="${(150+(r1+rr+8)*Math.cos(a)*0.95).toFixed(1)}" cy="${(150+(r1+rr+8)*Math.sin(a)*0.95).toFixed(1)}" r="${(rr/3).toFixed(1)}" fill="#2b8a3e"/>`;
+        }
+      }
+      s+='</svg>';
+    }
+    s+='</div>';
+  }
   $('#pizzaBox').innerHTML=s;
-  $('#cutTxt').textContent=`In ${A.d} Stücke geschnitten`;
-  $('#curA').innerHTML=F(A.sel.size,A.d);
+  $('#cutTxt').textContent=`In ${k} Stücke geschnitten`+(P>1?' (jede Pizza)':'');
+  const sn=A.sel.size;
+  $('#curA').innerHTML=F(sn,k)+(sn>k?' = '+mix(sn,k):'');
 }
 $('#pizzaBox').addEventListener('click',e=>{
   if(A.done)return;
   const p=e.target.closest('[data-i]');if(!p)return;
   const i=+p.dataset.i;A.sel.has(i)?A.sel.delete(i):A.sel.add(i);renderA();
 });
-$('#plusA').onclick=()=>{if(A.done)return;if(A.d<12){A.d++;A.sel=new Set();renderA()}};
-$('#minusA').onclick=()=>{if(A.done)return;if(A.d>2){A.d--;A.sel=new Set();renderA()}};
+$('#plusA').onclick=()=>{if(A.done||A.grid)return;if(A.d<12){A.d++;A.sel=new Set();renderA()}};
+$('#minusA').onclick=()=>{if(A.done||A.grid)return;if(A.d>2){A.d--;A.sel=new Set();renderA()}};
 $('#hintA').onclick=()=>{$('#hintBoxA').hidden=!$('#hintBoxA').hidden};
 $('#checkA').onclick=()=>{
   if(A.done)return;
   const {n,d}=A.t,sn=A.sel.size;
-  if(sn===0){msg('#msgA','Belege zuerst ein paar Stücke. 🍕','bad');return}
+  if(sn===0){msg('#msgA',A.grid?'Färbe zuerst ein paar Felder. 🍫':'Belege zuerst ein paar Stücke. 🍕','bad');return}
   if(sn*d===n*A.d){
     A.done=true;A.solved++;
     const exact=(sn===n&&A.d===d);
     addStars(exact?2:1);boom();
-    msg('#msgA',pick(PRAISE)+(exact?'':`<br>Dein Bruch ${F(sn,A.d)} hat denselben Wert wie ${F(n,d)} – das nennt man <b>erweitern</b>! Probiere beim nächsten Mal genau ${F(n,d)}.`),'ok');
+    msg('#msgA',pick(PRAISE)+(exact?'':`<br>Dein Bruch ${F(sn,A.d)} hat denselben Wert wie ${F(n,d)} – das nennt man <b>erweitern</b>! Probiere beim nächsten Mal genau ${F(n,d)}.`)+(n>d?`<br>${F(n,d)} = ${mix(n,d)}`:''),'ok');
     $('#checkA').hidden=true;$('#nextA').hidden=false;
   }else{
     if(A.d!==d)msg('#msgA',`Noch nicht ganz. Tipp: Der Nenner ist ${d} – schneide die Pizza in ${d} gleiche Stücke.`,'bad');
-    else if(sn<n)msg('#msgA',`Du hast erst ${sn} Stück${sn===1?'':'e'} belegt. Der Zähler ist ${n}, also brauchst du ${n - sn} mehr.`,'bad');
-    else msg('#msgA',`Das sind zu viele! Du brauchst nur ${n} Stück${n===1?'':'e'} – nimm ${sn-n} weg.`,'bad');
+    else if(sn<n)msg('#msgA',`Du hast erst ${sn} ${A.grid?'Feld':'Stück'}${sn===1?'':(A.grid?'er':'e')} ${A.grid?'gefärbt':'belegt'}. Der Zähler ist ${n}, also brauchst du ${n - sn} mehr.`,'bad');
+    else msg('#msgA',`Das sind zu viele! Du brauchst nur ${n} ${A.grid?'Feld':'Stück'}${n===1?'':(A.grid?'er':'e')} – nimm ${sn-n} weg.`,'bad');
   }
 };
 $('#nextA').onclick=newA;
 
 /* =========================================================
    SPIEL B – Bruch-Baumeister (Brüche zerlegen)
-   Ein Ganzes = 24 Einheiten
+   Ein Ganzes = U Einheiten (24, 60 oder 100, je nach Nenner-Stufe)
    ========================================================= */
-const TILES=[
-  {v:12,d:2,c:'#ff8787'},{v:8,d:3,c:'#ffa94d'},{v:6,d:4,c:'#ffd43b'},
-  {v:4,d:6,c:'#69db7c'},{v:3,d:8,c:'#74c0fc'},{v:2,d:12,c:'#b197fc'}
-];
+const BASES={
+  1:{U:24, pw:300,tiles:[[12,2],[8,3],[6,4],[4,6],[3,8],[2,12]]},
+  2:{U:60, pw:420,tiles:[[30,2],[20,3],[15,4],[12,5],[10,6],[6,10],[5,12],[4,15]]},
+  3:{U:100,pw:480,tiles:[[50,2],[25,4],[20,5],[10,10],[5,20],[4,25],[2,50]]}
+};
+const TCOL=['#ff8787','#ffa94d','#ffd43b','#69db7c','#74c0fc','#b197fc','#f783ac','#38d9a9','#a9e34b'];
+let TL=[];
+function buildTiles(){
+  const b=BASES[DEN];
+  TL=b.tiles.map(([v,d],i)=>({v,d,c:TCOL[i%TCOL.length]}));
+  if(IMP)TL.unshift({v:b.U,d:1,c:'#63e6be'});
+}
+buildTiles();
+const Ub=()=>BASES[DEN].U;
+const tileLab=i=>TL[i].d===1?'<b>1</b>':F(1,TL[i].d);
 const B={target:0,pieces:[],solved:0,done:false};
-const sumB=()=>B.pieces.reduce((a,i)=>a+TILES[i].v,0);
-function frU(u){ // Einheiten (24stel) als Bruch-HTML
+const sumB=()=>B.pieces.reduce((a,i)=>a+TL[i].v,0);
+const Wb=()=>Math.max(Ub(),Math.ceil(B.target/Ub())*Ub());
+function canMake(r){
+  const ok=new Array(r+1).fill(false);ok[0]=true;
+  for(let x=1;x<=r;x++)for(const t of TL)if(t.v<=x&&ok[x-t.v]){ok[x]=true;break}
+  return ok[r];
+}
+function frU(u,red){ // Einheiten als Bruch bzw. gemischte Zahl (HTML); bei großen Nennern ungekürzt
+  const U=Ub();
+  if(red===undefined)red=(DEN===1);
   if(u===0)return '0';
-  if(u===24)return '1';
-  const g=gcd(u,24);return F(u/g,24/g);
+  const w=Math.floor(u/U),r=u%U;
+  if(r===0)return String(w);
+  const g=red?gcd(r,U):1,fr=F(r/g,U/g);
+  if(w===0)return fr;
+  const gi=red?gcd(u,U):1;
+  return `<span class="mx"><b>${w}</b>${fr}</span> = ${F(u/gi,U/gi)}`;
+}
+function genTarget(){
+  const U=Ub(),maxT=IMP?(B.solved<4?2*U:3*U):U;
+  const src=B.solved<3?TL.slice(0,Math.max(3,Math.ceil(TL.length*.6))):TL;
+  const bigOnly=src.filter(x=>x.d!==1);
+  let t=0,guard=0;
+  do{
+    const k=2+rnd(B.solved<3?2:3);
+    t=0;for(let i=0;i<k;i++)t+=pick(src).v;
+    guard++;
+  }while((t>maxT||TL.some(x=>x.v===t)||t===B.target||t<U/6||(IMP&&t<=U&&Math.random()<.7))&&guard<800);
+  if(guard>=800)t=bigOnly[0].v+bigOnly[1].v;
+  return t;
 }
 function newB(){
-  const easy=[24,18,20,16],mid=[15,14,10,9,22,21],hard=[5,17,19];
-  const pool=B.solved<3?easy:B.solved<7?easy.concat(mid):easy.concat(mid,hard);
-  let t;do{t=pick(pool)}while(t===B.target);
+  buildTiles();
+  const U=Ub(),t=genTarget();
   B.target=t;B.pieces=[];B.done=false;
   $('#nextB').hidden=true;$('#hintBoxB').hidden=true;
+  $('#gridTxt').textContent=U;
   msg('#msgB','Tippe auf die Bausteine, bis du genau die rote Linie erreichst.');
-  const T=t===24?'ein Ganzes':frU(t);
-  $('#taskB').innerHTML=`Zerlege ${t===24?'<b>ein Ganzes</b>':F(...[t/gcd(t,24),24/gcd(t,24)],'big')} in Teile`;
-  $('#tiles').innerHTML=TILES.map((x,i)=>`<button class="tile" data-t="${i}" style="background:${x.c}">${F(1,x.d)}</button>`).join('');
+  $('#taskB').innerHTML=`Zerlege ${t===U?'<b>ein Ganzes</b>':t%U===0?`<b>${t/U} Ganze</b>`:frU(t).replace(/class="frac /g,'class="frac big ')} in Teile`;
+  $('#tiles').innerHTML=TL.map((x,i)=>`<button class="tile" data-t="${i}" style="background:${x.c}">${tileLab(i)}</button>`).join('');
   renderB();
 }
 function renderB(){
-  const s=sumB();
-  $('#segs').innerHTML=B.pieces.map((i,k)=>`<div class="seg" data-k="${k}" title="Wegnehmen" style="width:${TILES[i].v/24*100}%;background:${TILES[i].c}">${F(1,TILES[i].d)}</div>`).join('');
-  const pct=B.target/24*100;
+  const U=Ub(),pw=BASES[DEN].pw,s=sumB(),W=Wb();
+  const bar=$('#bar');bar.style.minWidth=(W/U*pw)+'px';
+  $('#segs').innerHTML=B.pieces.map((i,k)=>{
+    const px=TL[i].v/U*pw;
+    return `<div class="seg${px<44?' sm':''}" data-k="${k}" title="Wegnehmen" style="width:${TL[i].v/W*100}%;background:${TL[i].c}">${px<24?'':tileLab(i)}</div>`;
+  }).join('');
+  const pct=B.target/W*100;
   $('#over').style.left=pct+'%';
   const fl=$('#flag');fl.style.left=pct+'%';
   fl.classList.toggle('end',pct>70);
   $('#flagTxt').innerHTML='Ziel';
+  $('#gridl').style.backgroundImage=`repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/${W} - 1px),rgba(0,0,0,.28) calc(100%/${W} - 1px),rgba(0,0,0,.28) calc(100%/${W}))`;
+  const wl=$('#wholel');wl.hidden=W<=U;
+  wl.style.backgroundImage=`repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/${W/U} - 3px),#364fc7 calc(100%/${W/U} - 3px),#364fc7 calc(100%/${W/U}))`;
   $('#eqB').innerHTML=B.pieces.length?
-    B.pieces.map(i=>F(1,TILES[i].d)).join(' + ')+' = '+frU(s):'Noch nichts gebaut.';
+    B.pieces.map(i=>tileLab(i)).join(' + ')+' = '+frU(s):'Noch nichts gebaut.';
 }
 $('#tiles').addEventListener('click',e=>{
   if(B.done)return;
   const b=e.target.closest('[data-t]');if(!b)return;
-  const i=+b.dataset.t,v=TILES[i].v;
+  const i=+b.dataset.t,v=TL[i].v;
   if(sumB()+v>B.target){
     b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
     msg('#msgB','Der Baustein ist zu groß – er ragt über die rote Linie. Nimm einen kleineren! 🙂','bad');return;
@@ -439,11 +590,17 @@ $('#tiles').addEventListener('click',e=>{
   B.pieces.push(i);renderB();
   const rest=B.target-sumB();
   if(rest===0){
+    if(B.pieces.length<2){
+      B.pieces.pop();renderB();
+      b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
+      msg('#msgB','Das ist schon das ganze Ziel auf einmal. Zerlege es in <b>mindestens zwei</b> Teile!','bad');return;
+    }
     B.done=true;B.solved++;addStars(2);boom();
-    msg('#msgB',pick(PRAISE)+'<br>'+B.pieces.map(i=>F(1,TILES[i].d)).join(' + ')+' = '+(B.target===24?'1':frU(B.target)),'ok');
+    const ud=frU(B.target),rd=frU(B.target,true);
+    msg('#msgB',pick(PRAISE)+'<br>'+B.pieces.map(j=>tileLab(j)).join(' + ')+' = '+ud+(rd!==ud?'<br>Gekürzt: '+rd:''),'ok');
     $('#nextB').hidden=false;
-  }else if(rest===1){
-    msg('#msgB','Hier bleibt ein winziger Rest übrig. Tippe auf einen Baustein in der Leiste, um ihn wegzunehmen, und probiere es anders.','bad');
+  }else if(!canMake(rest)){
+    msg('#msgB','Mit den Bausteinen kannst du den Rest nicht mehr genau füllen. Tippe auf einen Baustein in der Leiste, um ihn wegzunehmen, oder auf „Zurück“.','bad');
   }else msg('#msgB','Gut! Es fehlt noch etwas bis zur roten Linie.');
 });
 $('#segs').addEventListener('click',e=>{
@@ -458,7 +615,7 @@ $('#nextB').onclick=newB;
 $('#gridB').onchange=e=>{$('#gridl').hidden=!e.target.checked};
 $('#hintB').onclick=()=>{
   const h=$('#hintBoxB');h.hidden=!h.hidden;
-  h.innerHTML='Ein Ganzes hat 24 Kästchen. Es gilt: '+TILES.map(t=>`${F(1,t.d)} = ${t.v} Kästchen`).join(', ')+'.<br>Das Ziel hat <b>'+B.target+'</b> Kästchen. Finde Bausteine, die zusammen genau '+B.target+' ergeben!';
+  h.innerHTML=`Ein Ganzes hat ${Ub()} Kästchen. Es gilt: `+TL.map(t=>`${t.d===1?'1 Ganzes':F(1,t.d)} = ${t.v} Kästchen`).join(', ')+'.<br>Das Ziel hat <b>'+B.target+'</b> Kästchen. Finde Bausteine, die zusammen genau '+B.target+' ergeben!';
 };
 
 /* =========================================================
@@ -471,38 +628,69 @@ function shapeSVG(n,d,type){
     for(let i=0;i<d;i++)s+=`<path d="${slicePath(150,150,134,i,d)}" fill="${i<n?'#ffa94d':'#fff'}" stroke="#495057" stroke-width="3" stroke-linejoin="round"/>`;
     return s+'</svg>';
   }
+  if(type==='grid'){
+    const [rows,cols]=dims(d),cell=300/cols,h=(rows*cell+4).toFixed(1);
+    let s=`<svg viewBox="0 0 300 ${h}" class="shape" style="width:min(88vw,420px)">`;
+    for(let i=0;i<d;i++){
+      const r=Math.floor(i/cols),c=i%cols;
+      s+=`<rect x="${(c*cell+2).toFixed(1)}" y="${(r*cell+2).toFixed(1)}" width="${(cell-3).toFixed(1)}" height="${(cell-3).toFixed(1)}" rx="3" fill="${i<n?'#4dabf7':'#fff'}" stroke="#495057" stroke-width="2"/>`;
+    }
+    return s+'</svg>';
+  }
   const w=300/d;
   let s=`<svg viewBox="0 0 300 110" class="shape" style="width:min(88vw,520px)">`;
   for(let i=0;i<d;i++)s+=`<rect x="${(i*w+2).toFixed(1)}" y="5" width="${(w-4).toFixed(1)}" height="100" rx="6" fill="${i<n?'#4dabf7':'#fff'}" stroke="#495057" stroke-width="3"/>`;
   return s+'</svg>';
 }
 function newC(){
-  const pool=C.solved<3?[2,3,4,5]:C.solved<7?[3,4,5,6,8]:[4,5,6,7,8,10,12];
-  const d=pick(pool),n=1+rnd(d-1);
-  const colored=Math.random()>0.3;   // sonst: nicht gefärbter Teil gesucht
+  let pool;
+  if(DEN===1)pool=C.solved<3?[2,3,4,5]:C.solved<7?[3,4,5,6,8]:[4,5,6,7,8,10,12];
+  else pool=DLIST[DEN].filter(x=>C.solved<3?x<=(DEN===2?16:30):true);
+  const d=pick(pool);
+  const maxP=(IMP&&DEN===1&&C.solved>=4)?3:2;
+  const improper=IMP&&d<=50&&Math.random()<.5;
+  let type;
+  if(d>16)type='grid';
+  else if(d>12)type=pick(['grid','bar']);
+  else type=pick(['circle','bar']);
+  const n=improper?d+1+rnd(d*(maxP-1)-1):1+rnd(d-1);
+  const colored=improper?true:Math.random()>0.3;   // sonst: nicht gefärbter Teil gesucht
+  const mixedMode=improper&&Math.random()<.5;
   const a=colored?n:d-n;
-  const type=pick(['circle','bar']);
-  const set=new Map();const add=(x,y)=>{if(x>=1&&x<y&&!set.has(x+'/'+y)&&set.size<4)set.set(x+'/'+y,[x,y])};
-  add(a,d);add(d-a,d);add(a+1<d?a+1:a-1,d);add(a,d+1);
-  let guard=0;while(set.size<4&&guard++<30)add(1+rnd(d),d);
-  C.q={n,d,type,colored,ans:a+'/'+d};C.done=false;
+  const set=new Map();
+  const add=(x,y)=>{if(x>=1&&(improper||x<y)&&!set.has(x+'/'+y)&&set.size<4)set.set(x+'/'+y,[x,y])};
+  if(improper){add(a,d);add(a%d||a+1,d);add(a+1,d);add(a-1,d);add(a,d+1);add(a+d,d)}
+  else if(d>12){add(a,d);add(d-a,d);add(a+1,d);add(a-1,d);add(a+2,d);add(a-2,d);add(a+5,d)}
+  else{add(a,d);add(d-a,d);add(a+1<d?a+1:a-1,d);add(a,d+1)}
+  let guard=0;while(set.size<4&&guard++<80)add(1+rnd(improper?maxP*d:d+2),pick([d,d,d+1,d+2]));
+  C.q={n,d,type,colored,improper,mixedMode,ans:a+'/'+d};C.done=false;
   $('#nextC').hidden=true;
-  $('#taskC').innerHTML=colored?'Welcher Bruch ist <b>gefärbt</b>?':'Welcher Bruch ist <b>nicht gefärbt</b>?';
-  $('#shapeC').innerHTML=shapeSVG(n,d,type);
-  $('#optsC').innerHTML=shuffle([...set.values()]).map(([x,y])=>`<button class="opt" data-a="${x}/${y}">${F(x,y,'big')}</button>`).join('');
-  msg('#msgC','Zähle die Stücke genau!');
+  $('#taskC').innerHTML=!colored?'Welcher Bruch ist <b>nicht gefärbt</b>?'
+    :improper?(mixedMode?'Welche <b>gemischte Zahl</b> ist gefärbt?':'Welcher <b>unechte Bruch</b> ist gefärbt?')
+    :'Welcher Bruch ist <b>gefärbt</b>?';
+  if(improper){
+    const P=Math.ceil(n/d);let sh='';
+    for(let i=0;i<P;i++)sh+=shapeSVG(Math.min(d,n-i*d),d,type);
+    $('#shapeC').innerHTML=`<div class="mini big ${type}">${sh}</div>`;
+  }else $('#shapeC').innerHTML=shapeSVG(n,d,type);
+  $('#optsC').innerHTML=shuffle([...set.values()]).map(([x,y])=>`<button class="opt" data-a="${x}/${y}">${mixedMode?mix(x,y):F(x,y,'big')}</button>`).join('');
+  msg('#msgC',improper?'Zähle zuerst die ganzen Formen, dann die Stücke der letzten!':d>12?'Tipp: Zähle zuerst alle Felder (Nenner) und dann die gefärbten (Zähler).':'Zähle die Stücke genau!');
 }
 $('#optsC').addEventListener('click',e=>{
   if(C.done)return;
   const b=e.target.closest('[data-a]');if(!b)return;
   if(b.dataset.a===C.q.ans){
-    C.done=true;C.solved++;b.classList.add('right');addStars(1);boom();
+    C.done=true;C.solved++;b.classList.add('right');addStars(C.q.improper?2:1);boom();
     const {n,d}=C.q;
-    msg('#msgC',pick(PRAISE)+`<br>Gefärbt: ${F(n,d)} · nicht gefärbt: ${F(d-n,d)} · zusammen ${F(n,d)} + ${F(d-n,d)} = 1 Ganzes`,'ok');
+    msg('#msgC',pick(PRAISE)+(C.q.improper
+      ?`<br>Gefärbt: ${F(n,d)} = ${mix(n,d)}`
+      :`<br>Gefärbt: ${F(n,d)} · nicht gefärbt: ${F(d-n,d)} · zusammen ${F(n,d)} + ${F(d-n,d)} = 1 Ganzes`),'ok');
     $('#nextC').hidden=false;
   }else{
     b.classList.add('wrong');
-    msg('#msgC',`Fast! Zähle alle Stücke (Nenner) und dann die ${C.q.colored?'gefärbten':'nicht gefärbten'} (Zähler).`,'bad');
+    msg('#msgC',C.q.improper
+      ?`Fast! Der Nenner ${C.q.d} sagt, wie viele Stücke ein Ganzes hat. Zähle alle gefärbten Stücke zusammen.`
+      :`Fast! Zähle alle Stücke (Nenner) und dann die ${C.q.colored?'gefärbten':'nicht gefärbten'} (Zähler).`,'bad');
   }
 });
 $('#nextC').onclick=newC;
@@ -526,37 +714,50 @@ function typeKey(k){
   activeIn.classList.remove('badv','good');
 }
 const cmpBtns=['<','=','>'].map(s=>`<button class="cmp" data-cmp="${s}">${s}</button>`).join('');
+function circles(w,r,d){
+  if(w>5||d>12)return '';
+  return '<div class="mini">'+shapeSVG(d,d,'circle').repeat(w)+shapeSVG(r,d,'circle')+'</div>';
+}
 function genD(){
   const types=D.solved<3?[0,1,2]:[0,1,2,3,4,5];
+  if(IMP)types.push(6,6);
   let t;do{t=pick(types)}while(t===D.last&&types.length>1);
   D.last=t;
-  const hard=D.solved>=6;
-  if(t===0){ // unecht -> gemischt
-    const d=pick(hard?[3,4,5,6,7,8]:[2,3,4,5]),w=1+rnd(hard?4:3),r=1+rnd(d-1),n=w*d+r;
-    return {task:`Wandle ${F(n,d,'big')} in eine gemischte Zahl um.`,
-      vis:'<div class="mini">'+shapeSVG(d,d,'circle').repeat(w)+shapeSVG(r,d,'circle')+'</div>',
+  const hard=D.solved>=6,dl=DLIST[DEN];
+  if(t===0||t===1){ // unecht <-> gemischt
+    const d=DEN===1?pick(hard?[3,4,5,6,7,8]:[2,3,4,5]):pick(dl.filter(x=>DEN===2||x<=50));
+    const w=1+rnd(DEN===1?(hard?4:3):DEN===2?6:5),r=1+rnd(d-1),n=w*d+r;
+    const vis=circles(w,r,d);
+    if(t===0)return {task:`Wandle ${F(n,d,'big')} in eine gemischte Zahl um.`,vis,
       body:`${inp(w)} Ganze und ${F(inp(r),d)}`,
       hint:`Wie oft passt ${d} in ${n}? Das sind die Ganzen. Was übrig bleibt, ist der neue Zähler.`,
       expl:`${F(n,d)} = ${w} ${F(r,d)}, denn ${w}·${d} = ${w*d} und ${n} − ${w*d} = ${r}.`};
-  }
-  if(t===1){ // gemischt -> unecht
-    const d=pick(hard?[3,4,5,6,7,8]:[2,3,4,5]),w=1+rnd(hard?4:3),r=1+rnd(d-1),n=w*d+r;
-    return {task:`Wandle <b>${w}</b>${F(r,d,'big')} in einen unechten Bruch um.`,
-      vis:'<div class="mini">'+shapeSVG(d,d,'circle').repeat(w)+shapeSVG(r,d,'circle')+'</div>',
+    return {task:`Wandle <b>${w}</b>${F(r,d,'big')} in einen unechten Bruch um.`,vis,
       body:`${w} ${F(r,d)} = ${F(inp(n),d)}`,
       hint:`Jedes Ganze hat ${d} Stücke. Rechne ${w} · ${d} + ${r}.`,
       expl:`${w}·${d} + ${r} = ${n}, also ${w} ${F(r,d)} = ${F(n,d)}.`};
   }
   if(t===2){ // erweitern
-    const d=2+rnd(hard?8:6),n=1+rnd(d-1),k=2+rnd(hard?8:5),D2=d*k;
+    let d,n,k,D2;
+    if(DEN===1){d=2+rnd(hard?8:6);k=2+rnd(hard?8:5);D2=d*k}
+    else{
+      D2=pick(DEN===2?[24,30,36,40,48,60]:[60,72,80,90,96,100,120]);
+      const divs=[];for(let x=(DEN===2?3:2);x<=D2/2;x++)if(D2%x===0)divs.push(x);
+      d=pick(divs);k=D2/d;
+    }
+    n=1+rnd(IMP?2*d-1:d-1);
     return {task:`Erweitere ${F(n,d,'big')} auf den Nenner <b>${D2}</b>.`,vis:'',
       body:`${F(n,d)} = ${F(inp(n*k),D2)}`,
       hint:`Womit wurde ${d} multipliziert, um ${D2} zu bekommen? Genauso musst du den Zähler multiplizieren.`,
       expl:`${D2} : ${d} = ${k}, also ${n}·${k} = ${n*k}.`};
   }
   if(t===3){ // kürzen
-    let a,b;do{b=2+rnd(hard?11:8);a=1+rnd(b-1)}while(gcd(a,b)!==1);
-    const k=2+rnd(hard?7:4);
+    let a,b,k;
+    do{
+      if(DEN===1){b=2+rnd(hard?11:8);k=2+rnd(hard?7:4)}
+      else{b=2+rnd(DEN===2?11:19);const cap=DEN===2?60:120;k=2+rnd(Math.max(1,Math.min(11,Math.floor(cap/b)-1)))}
+      a=1+rnd(IMP?2*b-1:b-1);
+    }while(gcd(a,b)!==1);
     return {task:`Kürze ${F(a*k,b*k,'big')} so weit wie möglich.`,vis:'',
       body:`${F(a*k,b*k)} = ${F(inp(a),inp(b))}`,
       hint:`Finde eine Zahl, durch die sich Zähler und Nenner teilen lassen. Gemeinsamer Teiler: ${k}.`,
@@ -564,17 +765,34 @@ function genD(){
   }
   if(t===4){ // vergleichen
     let d1,d2,n1,n2;
-    do{d1=2+rnd(hard?11:7);d2=2+rnd(hard?11:7);n1=1+rnd(d1-1);n2=1+rnd(d2-1)}
-    while(d1===d2||(n1*d2===n2*d1&&Math.random()<.75));
+    const nm=IMP?2:1;
+    if(DEN===1){
+      const dm=hard?11:7;
+      do{d1=2+rnd(dm);d2=2+rnd(dm);n1=1+rnd(nm*d1-1);n2=1+rnd(nm*d2-1)}
+      while(d1===d2||(n1*d2===n2*d1&&Math.random()<.75));
+    }else{
+      const mixP=dl.concat(DLIST[1]);
+      do{d1=pick(dl);d2=pick(mixP);n1=1+rnd(nm*d1-1);n2=1+rnd(nm*d2-1)}
+      while(d1===d2||(n1*d2===n2*d1&&Math.random()<.75));
+    }
     const l=n1*d2,r=n2*d1,c=l<r?'<':l>r?'>':'=',cd=d1*d2;
     return {task:`Setze das richtige Zeichen.`,vis:'',cmp:c,
       body:`${F(n1,d1,'big')} ${cmpBtns} ${F(n2,d2,'big')}`,
-      hint:`Mache die Brüche gleichnamig, zum Beispiel auf den Nenner ${cd}.`,
+      hint:`Mache die Brüche gleichnamig, zum Beispiel auf den Nenner ${cd}. Oder rechne über Kreuz: ${n1}·${d2} und ${n2}·${d1}.`,
       expl:`${F(n1,d1)} = ${F(l,cd)} und ${F(n2,d2)} = ${F(r,cd)}. Also ${F(n1,d1)} ${c} ${F(n2,d2)}.`};
   }
+  if(t===6){ // addieren, Ergebnis größer als 1
+    const d=DEN===1?3+rnd(10):pick(dl);
+    const lo=Math.ceil(d/2),a=lo+rnd(d-lo),b=d-a+1+rnd(a-1),s=a+b;
+    return {task:`Addiere. Das Ergebnis ist größer als 1!`,vis:'',
+      body:`${F(a,d)} + ${F(b,d)} = ${F(inp(s),d)} = ${inp(1)} ${F(inp(s-d),d)}`,
+      hint:`Beim Addieren gleichnamiger Brüche addierst du nur die Zähler: ${a} + ${b}. Der Nenner bleibt ${d}. Ein Ganzes sind ${d} Stücke.`,
+      expl:`${a} + ${b} = ${s}, also ${F(a,d)} + ${F(b,d)} = ${F(s,d)} = 1 ${F(s-d,d)}.`};
+  }
   // t===5: Summe ergänzen
-  const d=pick([6,8,9,10,12]),opts=[2,3,4].filter(q=>d%q===0);
-  const q=pick(opts),p=d/q,n=p+1+rnd(d-p-1);
+  const ds=DEN===1?[6,8,9,10,12]:dl;
+  const d=pick(ds),opts=[2,3,4,5,10].filter(q=>d%q===0);
+  const q=pick(opts),p=d/q,n=p+1+rnd((IMP?2*d:d)-p-1);
   return {task:`Zerlege ${F(n,d,'big')} in zwei Teile. Ergänze!`,vis:'',
     body:`${F(n,d)} = ${F(1,q)} + ${F(inp(n-p),d)}`,
     hint:`Schreibe ${F(1,q)} mit dem Nenner ${d}: ${F(1,q)} = ${F(p,d)}. Dann fehlt noch der Rest.`,
@@ -634,17 +852,18 @@ $('#nextD').onclick=newD;
 const E={run:false,score:0,lives:3,bubbles:[],rule:null,ruleIdx:-1,ruleCorrect:0,ruleT:0,spawnT:0,last:0,level:1,raf:0,pause:0,combo:0,best:0};
 const LEVELS={
   easy:{name:'Leicht',speed:.5,lives:5,maxRules:3,maxD:[6,6],spawn:2.2,match:.55,step:150,missCost:false,size:92,star:80,
-        desc:'Langsam, große Blasen, nur Halbe, Drittel, Viertel … 5 Leben. Verpasste Blasen kosten kein Leben.'},
+        desc:'Langsam, große Blasen, kleinere Nenner. 5 Leben. Verpasste Blasen kosten kein Leben.'},
   mid:{name:'Mittel',speed:.75,lives:4,maxRules:7,maxD:[8,10],spawn:1.8,match:.45,step:120,missCost:true,size:80,star:60,
         desc:'Mittleres Tempo, 4 Leben. Mit der Zeit kommen neue Regeln und größere Nenner dazu.'},
-  hard:{name:'Schwer',speed:1,lives:3,maxRules:9,maxD:[8,12],spawn:1.5,match:.42,step:100,missCost:true,size:76,star:45,
-        desc:'Schnell, 3 Leben, alle Regeln und Nenner bis 12. Nur für Bruch-Profis!'}
+  hard:{name:'Schwer',speed:1,lives:3,maxRules:20,maxD:[8,12],spawn:1.5,match:.42,step:100,missCost:true,size:76,star:45,
+        desc:'Schnell, 3 Leben, alle Regeln und die größten Nenner. Nur für Bruch-Profis!'}
 };
 let LVL='mid';
 try{LVL=localStorage.getItem('bruchArcadeLvl')||'mid'}catch(_){}
 if(!LEVELS[LVL])LVL='mid';
 const L=()=>LEVELS[LVL];
-function loadBest(){try{E.best=+localStorage.getItem('bruchArcadeBest_'+LVL)||0}catch(_){E.best=0}}
+const bestKey=()=>'bruchArcadeBest_'+LVL+'_'+DEN+(IMP?'u':'');
+function loadBest(){try{E.best=+localStorage.getItem(bestKey())||0}catch(_){E.best=0}}
 function lvlUI(){
   document.querySelectorAll('#lvls button').forEach(b=>b.classList.toggle('sel',b.dataset.lv===LVL));
   $('#lvDesc').textContent=L().desc;
@@ -655,17 +874,34 @@ function setLvl(k){
   loadBest();E.lives=L().lives;E.level=1;hudE();lvlUI();
 }
 const arena=$('#arena');
-const RULES=[
-  {s:`Tippe Brüche, die <b>gleich</b> ${F(1,2)} sind`,f:(n,d)=>n*2===d},
-  {s:`Tippe Brüche, die <b>kleiner als</b> ${F(1,2)} sind`,f:(n,d)=>n*2<d},
-  {s:`Tippe Brüche, die <b>größer als</b> ${F(1,2)} sind`,f:(n,d)=>n*2>d},
-  {s:`Tippe nur <b>Stammbrüche</b> (Zähler 1)`,f:(n,d)=>n===1},
-  {s:`Tippe Brüche, die <b>gleich</b> ${F(3,4)} sind`,f:(n,d)=>n*4===3*d},
-  {s:`Tippe Brüche, die man <b>kürzen</b> kann`,f:(n,d)=>gcd(n,d)>1},
-  {s:`Tippe Brüche, die <b>größer als</b> ${F(3,4)} sind`,f:(n,d)=>n*4>3*d},
-  {s:`Tippe Brüche, die <b>gleich</b> ${F(2,3)} sind`,f:(n,d)=>n*3===2*d},
-  {s:`Tippe Brüche, die <b>kleiner als</b> ${F(1,4)} sind`,f:(n,d)=>n*4<d},
+const R=(s,f)=>({s,f});
+const RS_SMALL=[
+  R(`Tippe Brüche, die <b>gleich</b> ${F(1,2)} sind`,(n,d)=>n*2===d),
+  R(`Tippe Brüche, die <b>kleiner als</b> ${F(1,2)} sind`,(n,d)=>n*2<d),
+  R(`Tippe Brüche, die <b>größer als</b> ${F(1,2)} sind`,(n,d)=>n*2>d),
+  R(`Tippe nur <b>Stammbrüche</b> (Zähler 1)`,(n,d)=>n===1),
+  R(`Tippe Brüche, die <b>gleich</b> ${F(3,4)} sind`,(n,d)=>n*4===3*d),
+  R(`Tippe Brüche, die man <b>kürzen</b> kann`,(n,d)=>gcd(n,d)>1),
+  R(`Tippe Brüche, die <b>größer als</b> ${F(3,4)} sind`,(n,d)=>n*4>3*d),
+  R(`Tippe Brüche, die <b>gleich</b> ${F(2,3)} sind`,(n,d)=>n*3===2*d),
+  R(`Tippe Brüche, die <b>kleiner als</b> ${F(1,4)} sind`,(n,d)=>n*4<d),
 ];
+const RS_BIG=[
+  R(`Tippe Brüche, die <b>gleich</b> ${F(1,2)} sind`,(n,d)=>n*2===d),
+  R(`Tippe Brüche, die <b>größer als 1</b> sind`,(n,d)=>n>d),
+  R(`Tippe nur <b>echte Brüche</b> (kleiner als 1)`,(n,d)=>n<d),
+  R(`Tippe Brüche, die <b>zwischen 1 und 2</b> liegen`,(n,d)=>n>d&&n<2*d),
+  R(`Tippe Brüche, die <b>größer als 2</b> sind`,(n,d)=>n>2*d),
+  R(`Tippe Brüche, die <b>kleiner als</b> ${F(1,2)} sind`,(n,d)=>n*2<d),
+  R(`Tippe Brüche, die man <b>kürzen</b> kann`,(n,d)=>gcd(n,d)>1),
+  R(`Tippe Brüche, die <b>gleich</b> ${F(3,2)} sind`,(n,d)=>n*2===3*d),
+  R(`Tippe Brüche, die <b>zwischen 2 und 3</b> liegen`,(n,d)=>n>2*d&&n<3*d),
+  R(`Tippe Brüche, die <b>gleich 1</b> sind`,(n,d)=>n===d),
+  R(`Tippe nur <b>Stammbrüche</b> (Zähler 1)`,(n,d)=>n===1),
+  R(`Tippe Brüche, die <b>gleich</b> ${F(3,4)} sind`,(n,d)=>n*4===3*d),
+  R(`Tippe Brüche, die <b>gleich</b> ${F(5,4)} sind`,(n,d)=>n*4===5*d),
+];
+const ruleSet=()=>IMP?RS_BIG:RS_SMALL;
 const BCOL=['#ffd43b','#ff8787','#74c0fc','#69db7c','#b197fc','#ffa94d'];
 function hudE(){
   $('#livesE').textContent='❤️'.repeat(Math.max(0,E.lives))+'🖤'.repeat(Math.max(0,L().lives-E.lives));
@@ -673,9 +909,9 @@ function hudE(){
 }
 function toastE(t){const e=$('#toastE');e.textContent=t;e.classList.remove('show');void e.offsetWidth;e.classList.add('show')}
 function pickRule(){
-  const avail=Math.min(L().maxRules,3+E.level);
+  const set=ruleSet(),avail=Math.min(L().maxRules,3+E.level,set.length);
   let i;do{i=rnd(avail)}while(i===E.ruleIdx&&avail>1);
-  E.ruleIdx=i;E.rule=RULES[i];E.ruleCorrect=0;E.ruleT=0;
+  E.ruleIdx=i;E.rule=set[i];E.ruleCorrect=0;E.ruleT=0;
   const r=$('#ruleE');r.innerHTML=E.rule.s;r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash');
 }
 function clearBubbles(){E.bubbles.forEach(b=>b.el.remove());E.bubbles=[];arena.querySelectorAll('.bub').forEach(x=>x.remove())}
@@ -692,10 +928,29 @@ function startE(){
   E.run=true;E.last=performance.now();E.raf=requestAnimationFrame(loopE);
 }
 function stopE(){E.run=false;cancelAnimationFrame(E.raf)}
+function denCap(){
+  const i=LVL==='easy'?0:LVL==='mid'?1:2;
+  return DEN===1?L().maxD[E.level<3?0:1]:DEN===2?[14,18,24][i]:[25,50,100][i];
+}
+function denList(){
+  const c=denCap();
+  if(DEN===1){const a=[];for(let d=2;d<=c;d++)a.push(d);return a}
+  return DLIST[DEN].filter(x=>x<=c);
+}
+function genFrac(rule,want){ // zählt alle passenden Zähler auf, damit auch seltene Regeln mit großen Nennern klappen
+  const ds=denList();
+  for(let t=0;t<25;t++){
+    const d=pick(ds),nMax=IMP?3*d-1:d-1;
+    let c=[];for(let n=1;n<=nMax;n++)if(rule.f(n,d)===want)c.push(n);
+    if(!c.length)continue;
+    if(IMP&&Math.random()<.5){const c2=c.filter(n=>n<2*d);if(c2.length)c=c2}
+    return [pick(c),d];
+  }
+  const d=pick(ds);return [1+rnd(d-1),d];
+}
 function spawnE(){
-  const want=Math.random()<L().match,maxD=E.level<3?L().maxD[0]:L().maxD[1],sz=L().size;
-  let n,d,t=0;
-  do{d=2+rnd(maxD-1);n=1+rnd(d-1);t++}while(E.rule.f(n,d)!==want&&t<80);
+  const want=Math.random()<L().match,sz=L().size;
+  const [n,d]=genFrac(E.rule,want);
   const el=document.createElement('div');
   el.className='bub';el.style.background=pick(BCOL);el.style.width=el.style.height=sz+'px';el.style.fontSize=(sz/76*1.2).toFixed(2)+'rem';
   el.style.left=Math.round(2+Math.random()*(Math.max(10,arena.clientWidth-sz-4)))+'px';
@@ -739,7 +994,7 @@ function gameOverE(){
   stopE();
   const st=Math.floor(E.score/L().star);
   if(st>0){addStars(st);boom()}
-  if(E.score>E.best){E.best=E.score;try{localStorage.setItem('bruchArcadeBest_'+LVL,E.best)}catch(_){}}
+  if(E.score>E.best){E.best=E.score;try{localStorage.setItem(bestKey(),E.best)}catch(_){}}
   hudE();
   $('#ovT').textContent='Game Over';
   $('#ovP').innerHTML=`Stufe ${L().name} · Punkte: <b>${E.score}</b> · Level ${E.level} · Bestwert ${E.best}<br>${st>0?`Du bekommst ${st} ⭐!`:`Ab ${L().star} Punkten gibt es den ersten Stern.`}`;
@@ -765,6 +1020,11 @@ $('#startE').onclick=startE;
 $('#lvls').addEventListener('click',e=>{const b=e.target.closest('[data-lv]');if(b)setLvl(b.dataset.lv)});
 loadBest();lvlUI();hudE();
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&E.run){E.pause=Math.max(E.pause,0);E.last=performance.now()}});
+
+/* ---------- Einstellungen im Menü ---------- */
+$('#rangeBtns').addEventListener('click',e=>{const b=e.target.closest('[data-rg]');if(b)setDen(+b.dataset.rg)});
+$('#impChk').addEventListener('change',e=>setImp(e.target.checked));
+rangeUI();
 
 /* ---------- Installieren / Offline ---------- */
 let deferredPrompt=null;

@@ -121,6 +121,43 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
 .numpad button:active{transform:translateY(4px);box-shadow:none;background:#cddcff}
 .numpad button.fn{background:#ffe8cc;box-shadow:0 4px 0 #e0a766}
 .numpad[hidden]{display:none}
+/* Zahlenstrahl */
+.nlsub{text-align:center;font-size:.95rem;color:#556;margin-bottom:4px}
+.nlbox{position:relative;padding:0 30px;margin:6px 0 2px}
+.track{position:relative;height:250px}
+.nlline{position:absolute;left:0;right:0;top:200px;height:6px;margin-top:-3px;border-radius:3px;background:#364fc7}
+.tk{position:absolute;top:190px;width:3px;margin-left:-1.5px;height:20px;background:#364fc7;border-radius:2px}
+.tk.mj{top:182px;height:36px;width:4px;margin-left:-2px}
+.tkl{position:absolute;top:222px;transform:translateX(-50%);font-size:.85rem;font-weight:700;white-space:nowrap;color:#364fc7}
+.tkl.end{font-size:1.3rem;color:#1f2a44}
+.tkl.sm{font-size:.7rem;color:#748ffc}
+.tkl .frac{margin:0}
+.pin{position:absolute;bottom:47px;display:flex;flex-direction:column;align-items:center;transform:translateX(-50%);animation:drop .3s}
+.pin .chip{background:#ebfbee;border:3px solid var(--ok);border-radius:12px;padding:2px 8px;font-size:1rem;white-space:nowrap;height:46px;display:flex;align-items:center}
+.pin .st{flex:1;width:3px;background:var(--ok)}
+.ind{position:absolute;top:30px;height:170px;width:0;border-left:4px dashed var(--accent);z-index:4;pointer-events:none;margin-left:-2px}
+.ind[hidden]{display:none}
+.tray{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;min-height:84px;margin:8px 0}
+.dc{background:#fff;border:3px solid var(--brand);border-radius:16px;padding:8px 14px;font-size:1.4rem;cursor:grab;
+  touch-action:none;box-shadow:0 4px 0 #0003;min-width:76px;min-height:68px;display:flex;align-items:center;justify-content:center}
+.dc.lift{opacity:.3}
+.ghost{position:fixed;left:0;top:0;z-index:999;pointer-events:none;transform:translate(-50%,-135%) scale(1.15);
+  box-shadow:0 10px 20px #0004;border-color:var(--accent);margin:0}
+/* Erweitern & Kürzen */
+.ew{display:grid;grid-template-columns:auto auto auto;justify-items:center;align-items:center;column-gap:10px;margin:10px auto;font-size:1.7rem;font-weight:800;width:max-content;max-width:100%}
+.ew .c{min-height:2.4em;display:flex;align-items:center;justify-content:center;min-width:2ch}
+.ew .bar{height:0;width:100%;min-width:2.6em;border-top:.14em solid currentColor;margin:2px 0}
+.ew .eqs{font-size:1.4rem}
+.ew .ar{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1}
+.ew .arr{font-size:1.2rem;color:#868e96}
+.ew input.num{font-size:.8em}
+.opb{font-size:.95rem;border-radius:999px;padding:3px 12px;color:#fff;background:var(--accent);white-space:nowrap;box-shadow:0 2px 0 #c76a0a}
+.opb.k{background:var(--brand);box-shadow:0 2px 0 #2b44b0}
+.rng.sm{margin:2px 0 10px}
+.rng.sm button{min-height:48px;font-size:.95rem;padding:6px 12px}
+.opb:has(input){display:flex;align-items:center;gap:6px;padding:4px 8px 4px 12px;font-size:1.2rem;font-weight:800}
+.opb input.num{font-size:.9rem;width:3.2em;height:2.2em;margin:0;background:#fff}
+.opb.q{background:#adb5bd;box-shadow:0 2px 0 #868e96}
 /* Größere Brüche */
 .rngcard{text-align:center}
 .rng{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0 6px}
@@ -201,6 +238,8 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
       <button data-go="A"><span class="em">🍕</span><span><b>Pizza-Bäcker</b><span class="d">Brüche bilden: Schneide die Pizza und belege die richtigen Stücke.</span></span></button>
       <button data-go="B"><span class="em">🧱</span><span><b>Bruch-Baumeister</b><span class="d">Brüche zerlegen: Baue den Bruch aus kleineren Bruchteilen.</span></span></button>
       <button data-go="C"><span class="em">🔍</span><span><b>Bruch-Detektiv</b><span class="d">Brüche erkennen: Welcher Bruch ist gefärbt – oder nicht gefärbt?</span></span></button>
+      <button data-go="Z"><span class="em">📏</span><span><b>Zahlenstrahl-Sortierer</b><span class="d">Ziehe die Brüche per Drag and Drop an die richtige Stelle auf dem Zahlenstrahl.</span></span></button>
+      <button data-go="W"><span class="em">🔧</span><span><b>Erweitern &amp; Kürzen</b><span class="d">Rechne mit dem angegebenen Faktor oder Teiler und finde den gleichwertigen Bruch.</span></span></button>
       <button data-go="D"><span class="em">🏆</span><span><b>Bruch-Meister-Challenge</b><span class="d">Knifflig: gemischte Zahlen, Erweitern, Kürzen, Vergleichen und Zerlegen.</span></span></button>
       <button data-go="E"><span class="em">🚀</span><span><b>Bruch-Arcade</b><span class="d">Arcade-Modus: Tippe die passenden Brüche, bevor sie unten ankommen!</span></span></button>
     </div>
@@ -266,6 +305,47 @@ input.num.active{border-color:var(--accent);background:#fff4e6;box-shadow:0 0 0 
       <div class="opts" id="optsC"></div>
       <div class="msg" id="msgC"></div>
       <div class="row"><button class="btn green" id="nextC" hidden>Weiter ➜</button></div>
+    </div>
+  </section>
+
+  <!-- SPIEL Z (Zahlenstrahl) -->
+  <section class="screen" id="Z">
+    <div class="top"><button class="btn grey" data-go="menu">← Menü</button><b>📏 Zahlenstrahl-Sortierer</b></div>
+    <div class="card">
+      <div class="task" id="taskZ"></div>
+      <div class="nlsub" id="subZ"></div>
+      <div class="nlbox"><div class="track" id="zTrack"></div></div>
+      <div class="msg" id="msgZ"></div>
+      <div class="tray" id="zTray"></div>
+      <div class="row">
+        <button class="btn orange" id="hintZ">💡 Beschriftung zeigen</button>
+        <button class="btn green" id="nextZ" hidden>Weiter ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPIEL W (Erweitern & Kürzen) -->
+  <section class="screen" id="W">
+    <div class="top"><button class="btn grey" data-go="menu">← Menü</button><b>🔧 Erweitern &amp; Kürzen</b></div>
+    <div class="card">
+      <div class="rng sm" id="wMode">
+        <button data-wm="1">🙂 Faktor / Teiler gegeben</button>
+        <button data-wm="2">🧠 Selbst herausfinden</button>
+      </div>
+      <div class="task" id="taskW"></div>
+      <div class="nlsub" id="subW"></div>
+      <div id="bodyW"></div>
+      <div class="numpad" id="numpadW">
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+        <button class="fn" data-k="del" aria-label="Löschen">⌫</button><button data-k="0">0</button><button class="fn" data-k="next" aria-label="Nächstes Feld">➜</button>
+      </div>
+      <div class="msg" id="msgW"></div>
+      <div class="row">
+        <button class="btn" id="checkW">Prüfen ✔</button>
+        <button class="btn green" id="nextW" hidden>Weiter ➜</button>
+      </div>
     </div>
   </section>
 
@@ -356,6 +436,8 @@ function go(id){
   if(id==='B'&&!B.target)newB();
   if(id==='C'&&!C.q)newC();
   if(id==='D'&&!D.q)newD();
+  if(id==='Z'&&!Z.cards.length)newZ();
+  if(id==='W'&&!W.q)newW();
   if(id==='E')showStartE();
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
@@ -392,7 +474,7 @@ function rangeUI(){
   $('#rangeDesc').textContent=DENS[DEN].desc+(IMP?' Dazu kommen auch Brüche größer als 1.':'');
 }
 function resetGames(){
-  A.t=null;B.target=0;C.q=null;D.q=null;
+  A.t=null;B.target=0;C.q=null;D.q=null;Z.cards=[];W.q=null;
   if(E.run)stopE();
   rangeUI();
 }
@@ -847,6 +929,124 @@ $('#bodyD').addEventListener('click',e=>{
 $('#nextD').onclick=newD;
 
 /* =========================================================
+   SPIEL W – Erweitern & Kürzen (Faktor bzw. Teiler ist vorgegeben)
+   ========================================================= */
+const W={q:null,solved:0,done:false,tries:0,mode:1};
+try{W.mode=+localStorage.getItem('bruchWMode')||1}catch(_){}
+if(W.mode!==2)W.mode=1;
+const WB={1:[4,6,8,9,10,12],2:[10,12,14,15,16,18,20,21,24],3:[24,30,36,40,45,48,50,60,64,72,75,80,90,96,100]};
+const divs=n=>{const r=[];for(let i=2;i<n;i++)if(n%i===0)r.push(i);return r};
+const inpW=a=>`<input class="num" type="text" readonly inputmode="none" data-ans="${a}" aria-label="Eingabe">`;
+let activeW=null;
+function setActiveW(el){
+  document.querySelectorAll('#bodyW input').forEach(x=>x.classList.remove('active'));
+  activeW=el;if(el)el.classList.add('active');
+}
+function typeKeyW(k){
+  if(W.done||!activeW)return;
+  const all=[...document.querySelectorAll('#bodyW input')];
+  if(k==='next'){setActiveW(all[(all.indexOf(activeW)+1)%all.length]);return}
+  if(k==='del')activeW.value=activeW.value.slice(0,-1);
+  else if(activeW.value.length<3)activeW.value+=k;
+  activeW.classList.remove('badv','good');
+}
+function genW(){
+  for(let guard=0;guard<500;guard++){
+    const ext=Math.random()<.5,adv=W.solved>=3;
+    const hard=W.mode===2;
+    const unk=hard?(Math.random()<.5?'num':'den'):((adv&&Math.random()<.5)?(Math.random()<.5?'num':'den'):'both');
+    let q;
+    if(ext){
+      const ks=W.solved<3?[2,3]:DEN===1?[2,3,4,5,6,10]:[2,3,4,5,10];
+      const b=pick(DLIST[DEN]),k=pick(ks),amax=IMP?2*b-1:b-1;
+      let a;do{a=1+rnd(amax)}while(a%b===0);
+      if(b*k>999||a*k>999)continue;
+      q={ext:true,a,b,f:k,ra:a*k,rb:b*k,unk,hard};
+    }else{
+      const b=pick(WB[DEN]),amax=IMP?2*b-1:b-1,cand=[];
+      for(let a=1;a<=amax;a++)if(a%b!==0&&gcd(a,b)>1)cand.push(a);
+      if(!cand.length)continue;
+      const a=pick(cand),g=gcd(a,b);let t=g;
+      if(W.solved>=4&&Math.random()<.35){const ds=divs(g);if(ds.length)t=pick(ds)}
+      q={ext:false,a,b,f:t,ra:a/t,rb:b/t,unk,hard};
+    }
+    if(W.q&&W.q.a===q.a&&W.q.b===q.b&&W.q.f===q.f&&W.q.ext===q.ext)continue;
+    if(hard&&q.ext&&W.solved<3&&q.f>3)continue;
+    return q;
+  }
+}
+function wHTML(q){
+  const sy=q.ext?'·':':',cl=q.ext?'':' k';
+  const op=q.hard?`<span class="opb${cl}">${sy} ${inpW(q.f)}</span><span class="arr">⟶</span>`:`<span class="opb${cl}">${sy} ${q.f}</span><span class="arr">⟶</span>`;
+  const op2=q.hard?`<span class="opb q">${sy} ?</span><span class="arr">⟶</span>`:op;
+  const n=q.unk==='den'?`<b>${q.ra}</b>`:inpW(q.ra),d=q.unk==='num'?`<b>${q.rb}</b>`:inpW(q.rb);
+  return `<div class="ew">
+    <div class="c">${q.a}</div><div class="ar">${op}</div><div class="c">${n}</div>
+    <div class="bar"></div><div class="eqs">=</div><div class="bar"></div>
+    <div class="c">${q.b}</div><div class="ar">${op2}</div><div class="c">${d}</div></div>`;
+}
+function newW(){
+  const q=genW();W.q=q;W.done=false;W.tries=0;
+  const kn=q.unk==='num'?[q.b,q.rb]:[q.a,q.ra]; // bekannte Seite (Start, Ziel)
+  q.hint=q.hard?(q.ext?`Suche die Zahl: ${kn[0]} · ? = ${kn[1]}. Mit genau dieser Zahl rechnest du auch bei der anderen Zahl.`
+                       :`Suche die Zahl: ${kn[0]} : ? = ${kn[1]}. Durch genau diese Zahl teilst du auch bei der anderen Zahl.`)
+    :q.ext?`Rechne Zähler und Nenner jeweils mal ${q.f}: ${q.a} · ${q.f} und ${q.b} · ${q.f}.`
+          :`Teile Zähler und Nenner jeweils durch ${q.f}: ${q.a} : ${q.f} und ${q.b} : ${q.f}.`;
+  const g=gcd(q.ra,q.rb);
+  q.expl=`${q.a} ${q.ext?'·':':'} ${q.f} = ${q.ra} und ${q.b} ${q.ext?'·':':'} ${q.f} = ${q.rb}, also ${F(q.a,q.b)} = ${F(q.ra,q.rb)}.`
+    +((!q.ext&&g>1)?`<br>Achtung: ${F(q.ra,q.rb)} lässt sich noch weiter kürzen (z. B. mit ${g}).`:'');
+  const tgt=q.unk==='num'?`auf den Nenner <b>${q.rb}</b>`:`auf den Zähler <b>${q.ra}</b>`;
+  $('#taskW').innerHTML=q.hard?(q.ext?`Erweitere ${F(q.a,q.b,'big')} ${tgt}.`:`Kürze ${F(q.a,q.b,'big')} ${tgt}.`)
+    :(q.ext?`Erweitere ${F(q.a,q.b,'big')} mit dem Faktor <b>${q.f}</b>.`:`Kürze ${F(q.a,q.b,'big')} mit dem Teiler <b>${q.f}</b>.`);
+  $('#subW').textContent=q.hard?(q.ext?`Finde den Faktor und ergänze die fehlende Zahl. Zähler und Nenner werden mit derselben Zahl malgenommen.`
+                                       :`Finde den Teiler und ergänze die fehlende Zahl. Zähler und Nenner werden durch dieselbe Zahl geteilt.`)
+    :q.ext?'Erweitern: Zähler und Nenner mit derselben Zahl malnehmen. Der Wert bleibt gleich.'
+          :'Kürzen: Zähler und Nenner durch dieselbe Zahl teilen. Der Wert bleibt gleich.';
+  document.querySelectorAll('#wMode button').forEach(b=>b.classList.toggle('sel',+b.dataset.wm===W.mode));
+  $('#bodyW').innerHTML=wHTML(q);
+  $('#checkW').hidden=false;$('#nextW').hidden=true;
+  setActiveW(document.querySelector('#bodyW input'));
+  msg('#msgW','Tippe auf ein Feld und gib die Zahl mit dem Ziffernblock ein. 💪');
+}
+function winW(){
+  W.done=true;W.solved++;setActiveW(null);
+  const k=Math.max(1,3-W.tries)+(W.q.hard?1:0);addStars(k);boom();
+  document.querySelectorAll('#bodyW input').forEach(e=>e.classList.add('good'));
+  msg('#msgW',pick(PRAISE)+` (+${k} ⭐)<br>${W.q.expl}`,'ok');
+  $('#checkW').hidden=true;$('#nextW').hidden=false;
+}
+$('#checkW').onclick=()=>{
+  if(W.done||!W.q)return;
+  const els=[...document.querySelectorAll('#bodyW input')];
+  if(els.some(e=>e.value==='')){msg('#msgW','Fülle alle Felder aus.','bad');return}
+  const ok=els.every(e=>+e.value===+e.dataset.ans);
+  els.forEach(e=>{e.classList.toggle('badv',!ok&&+e.value!==+e.dataset.ans);e.classList.toggle('good',+e.value===+e.dataset.ans&&!ok)});
+  if(ok){winW();return}
+  W.tries++;
+  if(W.tries>=3){
+    W.done=true;setActiveW(null);
+    els.forEach(e=>{e.value=e.dataset.ans;e.classList.remove('badv');e.classList.add('good')});
+    msg('#msgW',`Das war knifflig! So geht es: ${W.q.expl}`,'bad');
+    $('#checkW').hidden=true;$('#nextW').hidden=false;
+  }else msg('#msgW',`Noch nicht ganz. 💡 ${W.q.hint}`,'bad');
+};
+$('#numpadW').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b)typeKeyW(b.dataset.k)});
+$('#bodyW').addEventListener('click',e=>{const i=e.target.closest('input.num');if(i&&!W.done)setActiveW(i)});
+document.addEventListener('keydown',e=>{
+  if(!$('#W').classList.contains('active'))return;
+  if(/^[0-9]$/.test(e.key))typeKeyW(e.key);
+  else if(e.key==='Backspace')typeKeyW('del');
+  else if(e.key==='Tab'){e.preventDefault();typeKeyW('next')}
+  else if(e.key==='Enter')$('#checkW').click();
+});
+$('#nextW').onclick=newW;
+$('#wMode').addEventListener('click',e=>{
+  const b=e.target.closest('[data-wm]');if(!b)return;
+  W.mode=+b.dataset.wm;try{localStorage.setItem('bruchWMode',String(W.mode))}catch(_){}
+  newW();
+});
+
+/* =========================================================
    SPIEL E – Bruch-Arcade
    ========================================================= */
 const E={run:false,score:0,lives:3,bubbles:[],rule:null,ruleIdx:-1,ruleCorrect:0,ruleT:0,spawnT:0,last:0,level:1,raf:0,pause:0,combo:0,best:0};
@@ -1020,6 +1220,153 @@ $('#startE').onclick=startE;
 $('#lvls').addEventListener('click',e=>{const b=e.target.closest('[data-lv]');if(b)setLvl(b.dataset.lv)});
 loadBest();lvlUI();hudE();
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&E.run){E.pause=Math.max(E.pause,0);E.last=performance.now()}});
+
+/* =========================================================
+   SPIEL Z – Zahlenstrahl-Sortierer (Drag and Drop)
+   Nenner bis 12 / 24: Zahlenstrahl mit Teilstrichen, der Bruch rastet auf dem nächsten Strich ein.
+   Nenner bis 100: Schätzen – nur Zehntel-Markierungen, kleine Toleranz.
+   Mit "größer als 1": Zahlenstrahl von 1 bis 2 bzw. 2 bis 3, auch gemischte Zahlen.
+   ========================================================= */
+const Z={cards:[],win:0,d:4,mode:'tick',tol:.04,wrong:0,hint:false,solved:0,done:false,drag:null};
+function newZ(){
+  const free=DEN===3;
+  Z.mode=free?'free':'tick';
+  Z.win=IMP?rnd(3):0;Z.wrong=0;Z.hint=false;Z.done=false;Z.drag=null;
+  const nC=Z.solved<3?3:4,k=Z.win;
+  let cards=[];
+  if(!free){
+    const pool=DEN===1?(Z.solved<3?[4,5,6,8]:[4,5,6,8,10,12]):(Z.solved<3?[10,12,15,20]:DLIST[2]);
+    const d=pick(pool);Z.d=d;
+    const sep=d>=10?2:1,maxD=DEN===1?12:24,chosen=[];
+    const cand=[];for(let a=1;a<d;a++)if(a*2!==d)cand.push(a);
+    shuffle(cand);
+    for(const a of cand){if(chosen.length>=nC)break;if(chosen.every(b=>Math.abs(a-b)>=sep))chosen.push(a)}
+    cards=chosen.map(a=>{
+      const N=k*d+a;let n=N,dd=d;
+      if(Z.solved>=2&&Math.random()<.45){ // gleichwertige Darstellung (erweitert/gekürzt)
+        const fs=[];for(let x=2;x<=maxD;x++)if(x!==d&&(N*x)%d===0)fs.push(x);
+        if(fs.length){dd=pick(fs);n=N*dd/d}
+      }
+      return {a,N,n,dd,v:a/d};
+    });
+  }else{
+    Z.d=10;
+    const dens=Z.solved<3?[20,25,50,100]:DLIST[3];
+    for(let tries=0;tries<400&&cards.length<nC;tries++){
+      const dd=pick(dens);
+      let n0=1+rnd(dd-1);
+      if(dd===100&&Z.solved<6)n0=5*(1+rnd(19));
+      const v=n0/dd;
+      if(v<.06||v>.94||Math.abs(v-.5)<.07)continue;
+      if(cards.some(c=>Math.abs(c.v-v)<.1))continue;
+      cards.push({a:-1,N:k*dd+n0,n:k*dd+n0,dd,v});
+    }
+  }
+  cards.forEach(c=>{c.placed=false;c.mixed=k>0&&Z.solved>=2&&Math.random()<.5});
+  Z.cards=shuffle(cards);
+  $('#taskZ').innerHTML=`Ziehe jeden Bruch an die richtige Stelle auf dem Zahlenstrahl von <b>${k}</b> bis <b>${k+1}</b>.`;
+  $('#subZ').textContent=free
+    ?'Schätze: Die Striche zeigen Zehntel. Lass den Bruch ungefähr an der richtigen Stelle los.'
+    :`Der Abschnitt von ${k} bis ${k+1} ist in ${Z.d} gleich große Teile geteilt.`;
+  $('#nextZ').hidden=true;$('#hintZ').hidden=false;
+  msg('#msgZ','');
+  renderZ();
+}
+const zLab=c=>c.mixed?mix(c.n,c.dd):F(c.n,c.dd);
+function renderZ(){
+  const k=Z.win,d=Z.d,free=Z.mode==='free';
+  let h='<div class="nlline"></div>';
+  const nT=free?10:d;
+  const half=nT%2===0; // ½ wird nur markiert, wenn es ein echter Teilstrich ist – alle Abstände bleiben gleich
+  for(let i=0;i<=nT;i++)h+=`<div class="tk${(i===0||i===nT||(half&&i*2===nT))?' mj':''}" style="left:${i/nT*100}%"></div>`;
+  h+=`<div class="tkl end" style="left:0">${k}</div><div class="tkl end" style="left:100%">${k+1}</div>`;
+  if(half)h+=`<div class="tkl" style="left:50%">${k===0?F(1,2):mix(2*k+1,2)}</div>`;
+  if(Z.hint){
+    if(free){for(let i=1;i<10;i++)if(i!==5)h+=`<div class="tkl sm" style="left:${i*10}%">${F(k*10+i,10)}</div>`}
+    else{
+      const step=Math.ceil(d/8);
+      for(let i=step;i<d;i+=step)if(!half||Math.abs(i/d-.5)>=.09)h+=`<div class="tkl sm" style="left:${i/d*100}%">${F(k*d+i,d)}</div>`;
+    }
+  }
+  // gesetzte Brüche (Karten über dem Strahl, bei Nähe gestaffelt)
+  const tw=($('#zTrack').clientWidth||300);
+  const pl=Z.cards.filter(c=>c.placed).sort((a,b)=>a.v-b.v),last=[-1e9,-1e9,-1e9];
+  pl.forEach(c=>{
+    const x=c.v*tw;let lv=last.findIndex(l=>x-l>=70);if(lv<0)lv=last.indexOf(Math.min(...last));
+    last[lv]=x;
+    h+=`<div class="pin" style="left:${c.v*100}%;height:${66+lv*56}px"><div class="chip">${zLab(c)}</div><div class="st"></div></div>`;
+  });
+  h+='<div class="ind" id="zInd" hidden></div>';
+  $('#zTrack').innerHTML=h;
+  $('#zTray').innerHTML=Z.cards.map((c,i)=>c.placed?'':`<div class="dc" data-i="${i}">${zLab(c)}</div>`).join('');
+}
+function zRel(e){
+  const r=$('#zTrack').getBoundingClientRect(),w=r.width||300;
+  const rx=(e.clientX-r.left)/w;
+  const over=rx>-.12&&rx<1.12&&e.clientY>r.top-150&&e.clientY<r.bottom+120; // großzügig: Karte schwebt über dem Finger
+  return {rx:Math.max(0,Math.min(1,rx)),over};
+}
+function zMove(e){
+  const D=Z.drag;if(!D)return;
+  D.g.style.left=e.clientX+'px';D.g.style.top=e.clientY+'px';
+  const {rx,over}=zRel(e),ind=$('#zInd');
+  if(!ind)return;
+  ind.hidden=!over;
+  if(over)ind.style.left=((Z.mode==='tick'?Math.round(rx*Z.d)/Z.d:rx)*100)+'%';
+}
+function zEnd(e,cancel){
+  const D=Z.drag;if(!D||(e&&e.pointerId!==undefined&&D.id!==undefined&&e.pointerId!==D.id))return;
+  D.g.remove();D.el.classList.remove('lift');Z.drag=null;
+  const ind=$('#zInd');if(ind)ind.hidden=true;
+  if(cancel)return;
+  const {rx,over}=zRel(e);
+  if(over)zPlace(D.i,rx);
+}
+function zPlace(i,rx){
+  const c=Z.cards[i];if(!c||c.placed||Z.done)return;
+  rx=Math.max(0,Math.min(1,rx));
+  let ok,pos;
+  if(Z.mode==='tick'){const t=Math.round(rx*Z.d);pos=t/Z.d;ok=(t===c.a)}
+  else{pos=rx;ok=Math.abs(rx-c.v)<=Z.tol}
+  if(!ok){
+    Z.wrong++;
+    msg('#msgZ',pos<c.v?'Das ist zu weit <b>links</b> – dieser Bruch ist größer. Versuch es weiter rechts! 👉':'Das ist zu weit <b>rechts</b> – dieser Bruch ist kleiner. Versuch es weiter links! 👈','bad');
+    const t=$('#zTray');t.classList.remove('shake');void t.offsetWidth;t.classList.add('shake');
+    return;
+  }
+  c.placed=true;renderZ();
+  const eq=(Z.mode==='tick'&&c.dd!==Z.d)?` = ${F(c.N,Z.d)}`:'';
+  msg('#msgZ',`Richtig! ${zLab(c)}${eq} ✔`,'ok');
+  if(Z.cards.every(x=>x.placed)){
+    Z.done=true;Z.solved++;
+    const st=(Z.wrong===0&&!Z.hint)?2:1;
+    addStars(st);if(st===2)boom();
+    msg('#msgZ',`${pick(PRAISE)}<br>Alle Brüche sitzen richtig!`,'ok');
+    $('#nextZ').hidden=false;$('#hintZ').hidden=true;
+  }
+}
+{
+  const tray=$('#zTray');
+  const endDrag=(e,cancel)=>{if(Z.drag)zEnd(e,cancel)};
+  tray.addEventListener('pointerdown',e=>{
+    const el=e.target.closest('.dc');if(!el||Z.done)return;
+    if(Z.drag){Z.drag.g.remove();Z.drag.el.classList.remove('lift');Z.drag=null} // hängengebliebenes Ziehen zurücksetzen
+    e.preventDefault();
+    const g=el.cloneNode(true);g.classList.add('ghost');g.removeAttribute('data-i');document.body.appendChild(g);
+    el.classList.add('lift');
+    Z.drag={i:+el.dataset.i,el,g,id:e.pointerId};
+    try{el.setPointerCapture(e.pointerId)}catch(_){}
+    zMove(e);
+  });
+  // Auf document hören: funktioniert auch, wenn der Browser die Zeiger-Erfassung nicht unterstützt
+  document.addEventListener('pointermove',e=>{if(Z.drag)zMove(e)});
+  document.addEventListener('pointerup',e=>endDrag(e,false));
+  document.addEventListener('pointercancel',e=>endDrag(e,true));
+  tray.addEventListener('touchmove',e=>{if(Z.drag)e.preventDefault()},{passive:false});
+  tray.addEventListener('contextmenu',e=>e.preventDefault());
+}
+$('#hintZ').onclick=()=>{Z.hint=true;renderZ();msg('#msgZ','Jetzt siehst du Beschriftungen an den Strichen. Dann gibt es allerdings nur 1 ⭐.')};
+$('#nextZ').onclick=newZ;
 
 /* ---------- Einstellungen im Menü ---------- */
 $('#rangeBtns').addEventListener('click',e=>{const b=e.target.closest('[data-rg]');if(b)setDen(+b.dataset.rg)});

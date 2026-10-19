@@ -1,5 +1,5 @@
 // Einfacher Offline-Cache: Nach dem ersten Laden läuft die App ohne Internet.
-const CACHE = 'bruch-abenteuer-v1';
+const CACHE = 'bruch-abenteuer-v6';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
